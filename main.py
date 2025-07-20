@@ -20,7 +20,10 @@ def process_row(row, price_floor, row_num):
     try:
         low_price = float(tcg_low_price)
     except (ValueError, TypeError):
-        raise ValueError(f"Malformed or missing TCG Low Price at row {row_num}.")
+        card_name = row["Product Name"]
+        raise ValueError(
+            f"Malformed or missing TCG Low Price at row {row_num} with name {card_name}."
+        )
     if low_price >= price_floor:
         row["TCG Marketplace Price"] = f"{low_price:.2f}"
     else:
