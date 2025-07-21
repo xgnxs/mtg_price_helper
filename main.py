@@ -4,6 +4,11 @@ import argparse
 import sys
 
 
+def main(argv):
+    args = parse_args(argv)
+    return read_and_update_csv(args.file, args.price_floor)
+
+
 def parse_args(argv):
     parser = argparse.ArgumentParser(
         description="Update TCG Marketplace Price from TCG Market Price in a CSV file."
@@ -13,22 +18,6 @@ def parse_args(argv):
         "--price-floor", "-pf", required=True, type=float, help="Price floor (decimal)"
     )
     return parser.parse_args(argv)
-
-
-def process_row(row, price_floor, row_num):
-    tcg_low_price = row["TCG Low Price"]
-    try:
-        low_price = float(tcg_low_price)
-    except (ValueError, TypeError):
-        card_name = row["Product Name"]
-        raise ValueError(
-            f"Malformed or missing TCG Low Price at row {row_num} with name {card_name}."
-        )
-    if low_price >= price_floor:
-        row["TCG Marketplace Price"] = f"{low_price:.2f}"
-    else:
-        row["TCG Marketplace Price"] = f"{price_floor:.2f}"
-    return row
 
 
 def read_and_update_csv(input_csv, price_floor):
@@ -70,9 +59,20 @@ def read_and_update_csv(input_csv, price_floor):
         return 1
 
 
-def main(argv):
-    args = parse_args(argv)
-    return read_and_update_csv(args.file, args.price_floor)
+def process_row(row, price_floor, row_num):
+    tcg_low_price = row["TCG Low Price"]
+    try:
+        low_price = float(tcg_low_price)
+    except (ValueError, TypeError):
+        card_name = row["Product Name"]
+        raise ValueError(
+            f"Malformed or missing TCG Low Price at row {row_num} with name {card_name}."
+        )
+    if low_price >= price_floor:
+        row["TCG Marketplace Price"] = f"{low_price:.2f}"
+    else:
+        row["TCG Marketplace Price"] = f"{price_floor:.2f}"
+    return row
 
 
 if __name__ == "__main__":
