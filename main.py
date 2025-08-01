@@ -21,7 +21,7 @@ def parse_args(argv):
 
 
 def read_and_update_csv(input_csv, price_floor):
-    output_csv = os.path.splitext(input_csv)[0] + "_updated.csv"
+    output_csv = "updated_" + os.path.splitext(input_csv)[0] + ".csv"
     try:
         with open(input_csv, newline="", encoding="utf-8") as infile:
             reader = csv.DictReader(infile)
